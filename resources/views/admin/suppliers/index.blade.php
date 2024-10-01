@@ -1,37 +1,37 @@
-<!-- resources/views/admin/suppliers/index.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Suppliers</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Supplier List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h2>Manage Suppliers</h2>
-        <a href="{{ route('admin.suppliers.create') }}" class="btn btn-success">Add New Supplier</a>
-        
-        <table class="table mt-3">
+    <div class="container mt-5">
+        <h1>Registered Suppliers</h1>
+        <a href="{{ route('admin.suppliers.create') }}" class="btn btn-primary mb-3">Add Supplier</a>
+        <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Name</th>
-                    <th>Email</th>
+                    <th>Address</th>
                     <th>Phone</th>
+                    <th>Email</th>
+                    <th>Product</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($suppliers as $supplier)
+                @foreach ($suppliers as $supplier)
                     <tr>
-                        <td>{{ $supplier->id }}</td>
-                        <td>{{ $supplier->name }}</td>
-                        <td>{{ $supplier->email }}</td>
-                        <td>{{ $supplier->phone }}</td>
+                        <td>{{ $supplier->Sname }}</td>
+                        <td>{{ $supplier->Saddress }}</td>
+                        <td>{{ $supplier->Sphone }}</td>
+                        <td>{{ $supplier->Semail }}</td>
+                        <td>{{ $supplier->Product }}</td>
                         <td>
-                            <a href="{{ route('admin.suppliers.edit', $supplier->id) }}" class="btn btn-warning">Edit</a>
-                            <form action="{{ route('admin.suppliers.destroy', $supplier->id) }}" method="POST" style="display: inline;">
+                            <a href="{{ route('admin.suppliers.edit', $supplier->id) }}" class="btn btn-info">Edit</a>
+                            <form action="{{ route('admin.suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
@@ -40,8 +40,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>3
-        
+        </table>
     </div>
 </body>
 </html>

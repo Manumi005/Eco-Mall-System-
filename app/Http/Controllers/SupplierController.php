@@ -3,169 +3,101 @@
 namespace App\Http\Controllers;
 
 use App\Models\Supplier;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class SupplierController extends Controller
 {
-    // Register a new supplier
-    public function register(Request $request)
-    {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'Sname' => 'required|string|max:255',
-            'Saddress' => 'required|string|max:255',
-            'Sphone' => 'required|string|max:15',
-            'Semail' => 'required|email|unique:suppliers,Semail',
-            'Product' => 'required|string|max:255',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        // Return validation errors if any
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Create the new supplier
-        $supplier = Supplier::create([
-            'Sname' => $request->Sname,
-            'Saddress' => $request->Saddress,
-            'Sphone' => $request->Sphone,
-            'Semail' => $request->Semail,
-            'Product' => $request->Product,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Log the supplier in after registration
-        Auth::guard('supplier')->login($supplier);
-
-        // Redirect to the supplier dashboard
-        return redirect()->route('supplier.dashboard')->with('success', 'Supplier registered successfully.');
-    }
-
-    // Login for supplier
-    public function login(Request $request)
-    {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
-            'Semail' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
-
-        // Return validation errors if any
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Attempt to log the supplier in
-        if (!Auth::guard('supplier')->attempt(['Semail' => $request->Semail, 'password' => $request->password])) {
-            return redirect()->back()->with('error', 'Invalid credentials.');
-        }
-
-        // Redirect to the supplier dashboard after login
-        return redirect()->route('supplier.dashboard')->with('success', 'Logged in successfully.');
-    }
-
-    // Show the list of suppliers
+    // Display a listing of the suppliers
     public function index()
     {
-        // Retrieve all suppliers from the database
+        // Fetch all suppliers from the database
         $suppliers = Supplier::all();
-
-        // Pass suppliers data to the view
+        
+        // Pass the suppliers to the view
         return view('admin.suppliers.index', compact('suppliers'));
     }
 
-    // Show the form to create a new supplier
+    // Show the form for creating a new supplier
     public function create()
     {
         return view('admin.suppliers.create');
     }
 
-    // Store new supplier details
+    // Store a newly created supplier in the database
     public function store(Request $request)
     {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
+        // Validate the incoming request data
+        $request->validate([
             'Sname' => 'required|string|max:255',
             'Saddress' => 'required|string|max:255',
             'Sphone' => 'required|string|max:15',
             'Semail' => 'required|email|unique:suppliers,Semail',
             'Product' => 'required|string|max:255',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Return validation errors if any
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Create a new supplier record
+        // Create a new supplier in the database
         Supplier::create([
             'Sname' => $request->Sname,
             'Saddress' => $request->Saddress,
             'Sphone' => $request->Sphone,
             'Semail' => $request->Semail,
             'Product' => $request->Product,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
         ]);
 
-        // Redirect to the supplier index page
+        // Redirect to the suppliers list with a success message
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully.');
     }
 
-    // Show the form to edit supplier details
+    // Show the form for editing the specified supplier
     public function edit($id)
     {
-        // Find the supplier by ID
+        // Find the supplier by its ID
         $supplier = Supplier::findOrFail($id);
 
         // Pass the supplier to the edit view
         return view('admin.suppliers.edit', compact('supplier'));
     }
 
-    // Update supplier details
+    // Update the specified supplier in the database
     public function update(Request $request, $id)
     {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
+        // Validate the incoming request data
+        $request->validate([
             'Sname' => 'required|string|max:255',
             'Saddress' => 'required|string|max:255',
             'Sphone' => 'required|string|max:15',
-            'Semail' => 'required|email|unique:suppliers,Semail,' . $id,
+            'Semail' => 'required|email|unique:suppliers,Semail,'.$id,
             'Product' => 'required|string|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
-        // Return validation errors if any
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Find the supplier and update details
+        // Find the supplier by its ID
         $supplier = Supplier::findOrFail($id);
+
+        // Update the supplier's details
         $supplier->update([
             'Sname' => $request->Sname,
             'Saddress' => $request->Saddress,
             'Sphone' => $request->Sphone,
             'Semail' => $request->Semail,
             'Product' => $request->Product,
+            'password' => $request->password ? bcrypt($request->password) : $supplier->password,
         ]);
 
-        // Redirect to the supplier index page
+        // Redirect to the suppliers list with a success message
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier updated successfully.');
     }
 
-    // Delete a supplier
+    // Remove the specified supplier from the database
     public function destroy($id)
     {
-        // Find the supplier by ID and delete
+        // Find the supplier by its ID and delete it
         $supplier = Supplier::findOrFail($id);
         $supplier->delete();
 
-        // Redirect to the supplier index page
+        // Redirect to the suppliers list with a success message
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier deleted successfully.');
     }
 }
