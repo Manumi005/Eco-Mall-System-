@@ -140,8 +140,8 @@
                             <img src="{{ $product->image }}" alt="{{ $product->name }}">
                         </td>
                         <td>{{ $product->name }}</td>
-                        <td>${{ number_format($product->price, 2) }}</td>
-                        <td>{{ $product->quantity }}</td>
+                        <td>Rs.{{ number_format($product->price, 2) }}</td>
+                        <td>{{ $product->quantity }}g</td>
                         <td>{{ $product->category }}</td>
 
                         <!-- Show Edit/Delete actions based on authentication -->
