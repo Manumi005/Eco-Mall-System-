@@ -36,5 +36,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        'auth:admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+        'auth:supplier' => \App\Http\Middleware\AuthenticateSupplier::class,
     ];
 }

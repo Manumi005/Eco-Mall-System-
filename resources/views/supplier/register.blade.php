@@ -49,8 +49,7 @@
         }
     </style>
 </head>
-<body>
-   
+<body> 
 
         <form action="{{ route('supplier.register.submit') }}" method="POST">
             @csrf
