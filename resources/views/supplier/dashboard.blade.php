@@ -16,12 +16,48 @@
             text-align: center;
             margin-bottom: 20px;
         }
+
+        .dashboard-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
-    <div class="dashboard-header">
-        <h1>Welcome to the Supplier Dashboard</h1>
-        <p>Hello, <strong>{{ Auth::guard('supplier')->user()->Sname }}</strong>! You are logged in as a supplier.</p>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Welcome to the Supplier Dashboard</h1>
+            <p>Hello, <strong>{{ Auth::guard('supplier')->user()->Sname }}</strong>! You are logged in as a supplier.</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h4>Manage Your Products</h4>
+            <a href="{{ route('supplier.products.index') }}" class="btn btn-primary">View All Products</a>
+            <a href="{{ route('supplier.products.create') }}" class="btn btn-success">Add New Product</a>
+        </div>
+
+        <form action="{{ route('supplier.logout') }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="submit" class="btn logout-btn">Logout</button>
+        </form>
     </div>
 </body>
 </html>

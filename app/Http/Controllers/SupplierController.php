@@ -1,11 +1,13 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+
 class SupplierController extends Controller
 {
     // Register a new supplier
@@ -20,10 +22,12 @@ class SupplierController extends Controller
             'Product' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
         // Return validation errors if any
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         // Create the new supplier
         $supplier = Supplier::create([
             'Sname' => $request->Sname,
@@ -33,11 +37,14 @@ class SupplierController extends Controller
             'Product' => $request->Product,
             'password' => Hash::make($request->password),
         ]);
+
         // Log the supplier in after registration
         Auth::guard('supplier')->login($supplier);
+
         // Redirect to the supplier dashboard
         return redirect()->route('supplier.dashboard')->with('success', 'Supplier registered successfully.');
     }
+
     // Login for supplier
     public function login(Request $request)
     {
@@ -46,17 +53,31 @@ class SupplierController extends Controller
             'Semail' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
+
         // Return validation errors if any
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         // Attempt to log the supplier in
         if (!Auth::guard('supplier')->attempt(['Semail' => $request->Semail, 'password' => $request->password])) {
             return redirect()->back()->with('error', 'Invalid credentials.');
         }
+
         // Redirect to the supplier dashboard after login
         return redirect()->route('supplier.dashboard')->with('success', 'Logged in successfully.');
     }
+
+    // Show the supplier dashboard
+    public function dashboard()
+    {
+        // You can retrieve any data needed for the dashboard here
+        // For example, products added by the supplier
+        $products = auth()->user()->products; // Assuming the Supplier model has a products relationship
+
+        return view('supplier.dashboard', compact('products')); // Update with your view path
+    }
+
     // Show the list of suppliers
     public function index()
     {
@@ -65,11 +86,13 @@ class SupplierController extends Controller
         // Pass suppliers data to the view
         return view('admin.suppliers.index', compact('suppliers'));
     }
+
     // Show the form to create a new supplier
     public function create()
     {
         return view('admin.suppliers.create');
     }
+
     // Store new supplier details
     public function store(Request $request)
     {
@@ -82,10 +105,12 @@ class SupplierController extends Controller
             'Product' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
         ]);
+
         // Return validation errors if any
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         // Create a new supplier record
         Supplier::create([
             'Sname' => $request->Sname,
@@ -95,9 +120,11 @@ class SupplierController extends Controller
             'Product' => $request->Product,
             'password' => Hash::make($request->password),
         ]);
+
         // Redirect to the supplier index page
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully.');
     }
+
     // Show the form to edit supplier details
     public function edit($id)
     {
@@ -106,6 +133,7 @@ class SupplierController extends Controller
         // Pass the supplier to the edit view
         return view('admin.suppliers.edit', compact('supplier'));
     }
+
     // Update supplier details
     public function update(Request $request, $id)
     {
@@ -117,10 +145,12 @@ class SupplierController extends Controller
             'Semail' => 'required|email|unique:suppliers,Semail,' . $id,
             'Product' => 'required|string|max:255',
         ]);
+
         // Return validation errors if any
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         // Find the supplier and update details
         $supplier = Supplier::findOrFail($id);
         $supplier->update([
@@ -130,9 +160,11 @@ class SupplierController extends Controller
             'Semail' => $request->Semail,
             'Product' => $request->Product,
         ]);
+
         // Redirect to the supplier index page
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier updated successfully.');
     }
+
     // Delete a supplier
     public function destroy($id)
     {

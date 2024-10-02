@@ -20,7 +20,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 // Admin routes group
 Route::prefix('admin')->as('admin.')->group(function () {
-
     // Admin login & registration routes (accessible to non-authenticated admins)
     Route::middleware('guest:admin')->group(function () {
         Route::view('/login', 'admin.login')->name('login');
@@ -70,7 +69,6 @@ Route::prefix('admin')->as('admin.')->group(function () {
 
 // Supplier routes group
 Route::prefix('supplier')->as('supplier.')->group(function () {
-
     // Supplier login & registration routes (accessible to non-authenticated suppliers)
     Route::middleware('guest:supplier')->group(function () {
         Route::view('/login', 'supplier.login')->name('login');
@@ -82,9 +80,7 @@ Route::prefix('supplier')->as('supplier.')->group(function () {
 
     // Supplier authenticated routes
     Route::middleware(['auth:supplier'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('supplier.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [SupplierController::class, 'dashboard'])->name('dashboard');
 
         // Product management (Supplier-specific routes)
         Route::prefix('products')->group(function () {
@@ -95,5 +91,15 @@ Route::prefix('supplier')->as('supplier.')->group(function () {
             Route::put('/{product}', [ProductController::class, 'update'])->name('products.update');
             Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         });
+
+        // Define the logout route for suppliers
+        Route::post('/logout', [SupplierController::class, 'logout'])->name('logout');
+    });
+});
+
+// Customer routes (if any)
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+    Route::prefix('customer')->as('customer.')->group(function () {
+        Route::get('/products', [CustomerController::class, 'index'])->name('products.index');
     });
 });
