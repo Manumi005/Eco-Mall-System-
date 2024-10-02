@@ -98,6 +98,20 @@
             background-color: #218838;
         }
 
+        .back-dashboard {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .back-dashboard:hover {
+            background-color: #0056b3;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -108,6 +122,7 @@
     <div class="container">
         <h1>Product List</h1>
 
+      
         <!-- Show 'Add New Product' only if the user is an admin -->
         @if (Auth::guard('admin')->check())
             <a class="add-product" href="{{ route('admin.products.create') }}">Add New Product</a>
@@ -122,11 +137,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>Image</th>
                     <th>Name</th>
+                    <th>Supplier ID</th>
+                    <th>Supplier Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Category</th>
+                  
                     @if (Auth::guard('supplier')->check() || Auth::guard('admin')->check())
                         <th>Actions</th>
                     @endif
@@ -135,15 +152,14 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
-                        <td>
-                            <!-- Display product image -->
-                            <img src="{{ $product->image }}" alt="{{ $product->name }}">
-                        </td>
                         <td>{{ $product->name }}</td>
-                        <td>Rs.{{ number_format($product->price, 2) }}</td>
-                        <td>{{ $product->quantity }}g</td>
-                        <td>{{ $product->category }}</td>
+                        <td>{{ $product->supplier_id }}</td> <!-- Display Supplier ID -->
+                        <td>{{ $product->supplier->Sname ?? 'N/A' }}</td> <!-- Display Supplier Name, assuming a relationship exists -->
 
+                        <td>Rs.{{ number_format($product->price, 2) }}</td>
+                        <td>{{ $product->quantity }}</td>
+                        <td>{{ $product->category }}</td>
+                      
                         <!-- Show Edit/Delete actions based on authentication -->
                         @if (Auth::guard('admin')->check())
                             <td>

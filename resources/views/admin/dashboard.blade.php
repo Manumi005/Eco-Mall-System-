@@ -60,12 +60,14 @@
             background-color: #dc3545;
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
-            font-size: 1.1rem;
-            width: 100%;
+            font-size: 1rem;
+            width: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .logout-btn:hover {
@@ -113,6 +115,15 @@
                 <div class="dashboard-card text-center">
                     <h4>Manage Products</h4>
                     <a href="{{ route('admin.products.index') }}" class="btn btn-primary">View All Products</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="dashboard-card text-center">
+                    <h4>Manage Orders</h4>
+                    <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">View All Orders</a>
                 </div>
             </div>
         </div>

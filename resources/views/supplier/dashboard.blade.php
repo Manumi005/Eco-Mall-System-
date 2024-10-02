@@ -54,6 +54,11 @@
             <a href="{{ route('supplier.products.create') }}" class="btn btn-success">Add New Product</a>
         </div>
 
+        <div class="dashboard-card">
+            <h4>Manage Your Orders</h4>
+            <a href="{{ route('supplier.orders.index') }}" class="btn btn-primary">View All Orders</a>
+        </div>
+
         <form action="{{ route('supplier.logout') }}" method="POST" style="display: inline;">
             @csrf
             <button type="submit" class="btn logout-btn">Logout</button>

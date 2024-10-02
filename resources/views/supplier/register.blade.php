@@ -5,52 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Registration</title>
     <style>
-        /* Styling for better UX */
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
         .container {
             max-width: 400px;
             margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Label Styling */
         label {
             font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
         }
 
+        /* Input Field Styling */
         input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fafafa;
+            transition: border-color 0.3s ease;
         }
 
+        /* Input Focus Styles */
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #f0f8ff;
+        }
+
+        /* Button Styling */
         button[type="submit"] {
+            padding: 12px;
             background-color: #007bff;
-            color: #fff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
             border: none;
-            border-radius: 3px;
-            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
 
+        /* Error Message Styling */
         .error {
             color: red;
             margin-bottom: 15px;
         }
+
+        /* Media Query for Mobile Devices */
+        @media (max-width: 500px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            button[type="submit"] {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
-<body> 
-
+<body>
+    <div class="container">
+        <h2>Supplier Registration</h2>
         <form action="{{ route('supplier.register.submit') }}" method="POST">
             @csrf
             <div class="form-group">

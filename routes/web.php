@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;  
 
 // Landing page route
 Route::get('/', function () {
@@ -20,7 +21,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 // Admin routes group
 Route::prefix('admin')->as('admin.')->group(function () {
-    // Admin login & registration routes (accessible to non-authenticated admins)
+    // Admin login & registration routes (for non-authenticated admins)
     Route::middleware('guest:admin')->group(function () {
         Route::view('/login', 'admin.login')->name('login');
         Route::post('/login', [AdminController::class, 'login'])->name('login.submit');
@@ -31,45 +32,30 @@ Route::prefix('admin')->as('admin.')->group(function () {
 
     // Admin authenticated routes
     Route::middleware(['auth:admin'])->group(function () {
-        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
-        // Customer management routes
-        Route::prefix('customers')->group(function () {
-            Route::get('/', [CustomerController::class, 'index'])->name('customers.index');
-            Route::get('/create', [CustomerController::class, 'create'])->name('customers.create');
-            Route::post('/', [CustomerController::class, 'store'])->name('customers.store');
-            Route::get('/{customer}', [CustomerController::class, 'show'])->name('customers.show');
-            Route::get('/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
-            Route::put('/{customer}', [CustomerController::class, 'update'])->name('customers.update');
-            Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
-        });
+        // Customer management routes (Admin)
+        Route::resource('customers', CustomerController::class);
 
-        // Supplier management routes
-        Route::prefix('suppliers')->group(function () {
-            Route::get('/', [SupplierController::class, 'index'])->name('suppliers.index');
-            Route::get('/create', [SupplierController::class, 'create'])->name('suppliers.create');
-            Route::post('/', [SupplierController::class, 'store'])->name('suppliers.store');
-            Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
-            Route::put('/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
-            Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
-        });
+        // Supplier management routes (Admin)
+        Route::resource('suppliers', SupplierController::class);
 
         // Product management routes (Admin)
-        Route::prefix('products')->group(function () {
-            Route::get('/', [ProductController::class, 'index'])->name('products.index');
-            Route::get('/create', [ProductController::class, 'create'])->name('products.create');
-            Route::post('/', [ProductController::class, 'store'])->name('products.store');
-            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-            Route::put('/{product}', [ProductController::class, 'update'])->name('products.update');
-            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::resource('products', ProductController::class);
+
+        // Order management routes (Admin)
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+            Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
+            Route::put('/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
         });
     });
 });
 
 // Supplier routes group
 Route::prefix('supplier')->as('supplier.')->group(function () {
-    // Supplier login & registration routes (accessible to non-authenticated suppliers)
+    // Supplier login & registration routes (for non-authenticated suppliers)
     Route::middleware('guest:supplier')->group(function () {
         Route::view('/login', 'supplier.login')->name('login');
         Route::post('/login', [SupplierController::class, 'login'])->name('login.submit');
@@ -82,24 +68,28 @@ Route::prefix('supplier')->as('supplier.')->group(function () {
     Route::middleware(['auth:supplier'])->group(function () {
         Route::get('/dashboard', [SupplierController::class, 'dashboard'])->name('dashboard');
 
-        // Product management (Supplier-specific routes)
-        Route::prefix('products')->group(function () {
-            Route::get('/', [ProductController::class, 'index'])->name('products.index');
-            Route::get('/create', [ProductController::class, 'create'])->name('products.create');
-            Route::post('/', [ProductController::class, 'store'])->name('products.store');
-            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-            Route::put('/{product}', [ProductController::class, 'update'])->name('products.update');
-            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        // Supplier-specific product management
+        Route::resource('products', ProductController::class)->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+
+        // Supplier-specific order management
+        Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'supplierOrders'])->name('orders.index');
+            Route::get('/{order}', [OrderController::class, 'show'])->name('orders.show');
+            Route::put('/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
         });
 
-        // Define the logout route for suppliers
+        // Supplier logout route
         Route::post('/logout', [SupplierController::class, 'logout'])->name('logout');
     });
 });
 
-// Customer routes (if any)
+// Customer routes
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::prefix('customer')->as('customer.')->group(function () {
         Route::get('/products', [CustomerController::class, 'index'])->name('products.index');
+        Route::get('/orders', [CustomerController::class, 'ordersIndex'])->name('orders.index'); // List all orders
+        Route::get('/orders/{order}', [CustomerController::class, 'ordersShow'])->name('orders.show'); // View a specific order
     });
 });
+
+

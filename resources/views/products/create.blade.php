@@ -15,21 +15,23 @@
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
 
         form {
             max-width: 600px;
             margin: 0 auto;
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: bold;
+            color: #555;
         }
 
         input[type="text"],
@@ -37,38 +39,62 @@
         input[type="file"],
         select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
         }
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #28a745;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         button:hover {
             background-color: #218838;
+            transform: translateY(-2px);
         }
 
-        a {
+        /* Styling the Back to Product List Link */
+        .back-link {
             display: inline-block;
             margin-top: 20px;
-            text-align: center;
-            color: #007bff;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
             text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
-        a:hover {
-            color: #0056b3;
+        .back-link:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Centering the Back to Product List Link */
+        .back-link-container {
+            text-align: center;
         }
     </style>
 </head>
@@ -101,6 +127,10 @@
         
         <button type="submit">Add Product</button>
     </form>
-    <a href="{{ route('admin.products.index') }}">Back to Product List</a>
+
+    <!-- Centering the Back Link -->
+    <div class="back-link-container">
+        <a href="{{ route('admin.products.index') }}" class="back-link">Back to Product List</a>
+    </div>
 </body>
 </html>
