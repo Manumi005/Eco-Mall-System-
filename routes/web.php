@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 
 // Landing page route
 Route::get('/', function () {
@@ -50,9 +51,19 @@ Route::prefix('admin')->as('admin.')->group(function () {
             Route::get('/', [SupplierController::class, 'index'])->name('suppliers.index');
             Route::get('/create', [SupplierController::class, 'create'])->name('suppliers.create');
             Route::post('/', [SupplierController::class, 'store'])->name('suppliers.store');
-            Route::get('/{id}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
-            Route::put('/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
-            Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+            Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
+            Route::put('/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
+            Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+        });
+
+        // Product management routes (Admin)
+        Route::prefix('products')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('products.index');
+            Route::get('/create', [ProductController::class, 'create'])->name('products.create');
+            Route::post('/', [ProductController::class, 'store'])->name('products.store');
+            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+            Route::put('/{product}', [ProductController::class, 'update'])->name('products.update');
+            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         });
     });
 });
@@ -74,6 +85,15 @@ Route::prefix('supplier')->as('supplier.')->group(function () {
         Route::get('/dashboard', function () {
             return view('supplier.dashboard');
         })->name('dashboard');
+
+        // Product management (Supplier-specific routes)
+        Route::prefix('products')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('products.index');
+            Route::get('/create', [ProductController::class, 'create'])->name('products.create');
+            Route::post('/', [ProductController::class, 'store'])->name('products.store');
+            Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+            Route::put('/{product}', [ProductController::class, 'update'])->name('products.update');
+            Route::delete('/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        });
     });
 });
-

@@ -61,6 +61,11 @@
             <a href="{{ route('admin.suppliers.index') }}" class="btn btn-primary">View All Suppliers</a>
         </div>
 
+        <div class="dashboard-card">
+            <h4>Manage Products</h4>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-primary">View All Products</a>
+        </div>
+
         <form action="{{ route('admin.logout') }}" method="POST" style="display: inline;">
             @csrf
             <button type="submit" class="btn logout-btn">Logout</button>
